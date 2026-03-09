@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+export default function useCurrency(currency: string) {
+  const [data, setData] = useState<Record<string, number>>({});
 
-export default function FetchedData(){
-    const [data,setData]=useState({})
-    const currency='inr'
-       const FetchedData=async()=>{
-            const response = await axios.get(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${currency}.json`)
-            const data=response.data;
-            return setData(data[currency])
-        }
-    useEffect(()=>{
-     FetchedData();
-    },[currency]);
-    return data;
+  useEffect(() => {
+    const fetchCurrency = async () => {
+      try {
+        const response = await axios.get(
+          `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${currency}.json`
+        );
+
+        setData(response.data[currency]);
+      } catch (error) {
+        console.error("Currency fetch error:", error);
+      }
+    };
+
+    fetchCurrency();
+  }, [currency]);
+
+  return data;
 }
